@@ -38,23 +38,30 @@ function uploadBudget() {
     const getAll = store.getAll();
   
     getAll.onsuccess = function () {
-      if (getAll.result.length > 0) {
-        fetch("/api/transaction", {
-          method: "POST",
-          body: JSON.stringify(getAll.result),
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            "Content-Type": "application/json"
-          }
-        })
-          .then(response => response.json())
-          .then(() => {
-            const transaction = db.transaction(["new_budget"], "readwrite");
-            const store = transaction.objectStore("new_budget");
-            store.clear();
-          });
-      }
+        if (getAll.result.length > 0) {
+            fetch("/api/transaction", {
+                method: "POST",
+                body: JSON.stringify(getAll.result),
+                headers: {
+                    Accept: "application/json, text/plain, */*",
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(() => {
+                    const transaction = db.transaction(["new_budget"], "readwrite");
+
+                    const store = transaction.objectStore("new_budget");
+
+                    alert('All transactions has been uploaded!');
+
+                    store.clear();
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     };
-  }
+}
   
 window.addEventListener('online', uploadBudget);
